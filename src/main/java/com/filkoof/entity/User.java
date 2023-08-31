@@ -1,10 +1,12 @@
 package com.filkoof.entity;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
+
+import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
@@ -22,6 +24,9 @@ public class User {
     //    @Convert(converter = BirthdayConverter.class)
     @Column(name = "birth_date")
     private Birthday birthDate;
+
+    @Type(type = "jsonb")
+    private String info;
 
     @Enumerated(EnumType.STRING)
     private Role role;
