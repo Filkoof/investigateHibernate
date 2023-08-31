@@ -1,9 +1,9 @@
 package com.filkoof;
 
+import com.filkoof.entity.Role;
 import com.filkoof.entity.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy;
 import org.hibernate.cfg.Configuration;
 
 import java.time.LocalDate;
@@ -25,6 +25,7 @@ public class HibernateRunner {
                     .lastname("Petrov")
                     .birthDate(LocalDate.of(2000,1,1))
                     .age(23)
+                    .role(Role.ADMIN)
                     .build();
 
             session.save(user);
