@@ -1,5 +1,7 @@
 package com.filkoof;
 
+import com.filkoof.convertet.BirthdayConverter;
+import com.filkoof.entity.Birthday;
 import com.filkoof.entity.Role;
 import com.filkoof.entity.User;
 import org.hibernate.Session;
@@ -13,6 +15,7 @@ public class HibernateRunner {
     public static void main(String[] args) {
         Configuration configuration = new Configuration();
 //        configuration.setPhysicalNamingStrategy(new CamelCaseToUnderscoresNamingStrategy());
+        configuration.addAttributeConverter(new BirthdayConverter());
         configuration.configure();
 
         try (SessionFactory sessionFactory = configuration.buildSessionFactory();
@@ -20,11 +23,10 @@ public class HibernateRunner {
             session.beginTransaction();
 
             User user = User.builder()
-                    .username("petya@gmail.com")
+                    .username("petya1@gmail.com")
                     .firstname("Petya")
                     .lastname("Petrov")
-                    .birthDate(LocalDate.of(2000,1,1))
-                    .age(23)
+                    .birthDate(new Birthday(LocalDate.of(2000, 1, 1)))
                     .role(Role.ADMIN)
                     .build();
 
