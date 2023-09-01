@@ -1,42 +1,42 @@
 package com.filkoof;
 
-import com.filkoof.convertet.BirthdayConverter;
 import com.filkoof.entity.User;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import com.filkoof.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HibernateRunner {
 
+    private static final Logger log = LoggerFactory.getLogger(HibernateRunner.class);
+
     public static void main(String[] args) {
-        Configuration configuration = new Configuration();
-//        configuration.setPhysicalNamingStrategy(new CamelCaseToUnderscoresNamingStrategy());
-        configuration.addAttributeConverter(new BirthdayConverter());
-        configuration.registerTypeOverride(new JsonBinaryType());
-        configuration.configure();
 
-        try (SessionFactory sessionFactory = configuration.buildSessionFactory();
-             Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
+        User user = User.builder()
+                .username("ivan@gmail.com")
+                .firstname("Ivan")
+                .lastname("Ivanov")
+                .build();
 
-//            User user = User.builder()
-//                    .username("petya@gmail.com")
-//                    .firstname("Petya")
-//                    .lastname("Petrov")
-//                    .birthDate(new Birthday(LocalDate.of(2000, 1, 1)))
-//                    .info("""
-//                            {
-//                                "name": "Ivan",
-//                                "id": 25
-//                            }
-//                            """)
-//                    .role(Role.ADMIN)
-//                    .build();
+        log.info("User entity is in transient state, object {}", user);
 
-            User user = session.get(User.class, "petya@gmail.com");
+        try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory()) {
+            Session session = sessionFactory.openSession();
+            try (session) {
+                Transaction transaction = session.beginTransaction();
+                log.trace("Transaction is created, {}", transaction);
 
-            session.getTransaction().commit();
+                session.saveOrUpdate(user);
+                log.trace("User is in persistent state: {}, session {}", user, session);
+
+                session.getTransaction().commit();
+            }
+            log.warn("User is in detached state: {}, session is closed {}", user, session);
+        } catch (Exception exception) {
+            log.error("Exception occurred", exception);
+            throw exception;
         }
     }
 }

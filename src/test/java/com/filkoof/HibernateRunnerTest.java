@@ -20,7 +20,8 @@ import static java.util.stream.Collectors.joining;
 class HibernateRunnerTest {
 
     @Test
-    void checkGetReflectionApi() throws SQLException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchFieldException, NoSuchMethodException {
+    void checkGetReflectionApi() throws SQLException, InvocationTargetException, InstantiationException,
+            IllegalAccessException, NoSuchFieldException, NoSuchMethodException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = preparedStatement.executeQuery();
 

@@ -25,7 +25,7 @@ public class User {
     @Column(name = "birth_date")
     private Birthday birthDate;
 
-    @Type(type = "jsonb")
+    @Type(type = "com.vladmihalcea.hibernate.type.json.JsonBinaryType")
     private String info;
 
     @Enumerated(EnumType.STRING)
