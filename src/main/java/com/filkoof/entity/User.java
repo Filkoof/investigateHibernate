@@ -1,10 +1,7 @@
 package com.filkoof.entity;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -13,6 +10,7 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = "company")
 @Builder
 @Entity
 @Table(name = "users", schema = "public")
@@ -49,7 +47,7 @@ public class User {
     @Enumerated(EnumType.STRING) //EnumType.ORDINAL for mapping enum to int
     private Role role;
 
-    @ManyToOne
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     private Company company;
 }
