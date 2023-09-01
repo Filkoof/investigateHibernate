@@ -1,6 +1,9 @@
 package com.filkoof;
 
+import com.filkoof.entity.Company;
 import com.filkoof.entity.User;
+import com.filkoof.util.HibernateUtil;
+import lombok.Cleanup;
 import org.junit.jupiter.api.Test;
 
 import javax.persistence.Column;
@@ -18,6 +21,19 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
 
 class HibernateRunnerTest {
+
+    @Test
+    void oneToMany() {
+        @Cleanup var sessionFactory = HibernateUtil.buildSessionFactory();
+        @Cleanup var session = sessionFactory.openSession();
+
+        session.beginTransaction();
+
+        session.get(Company.class, 1);
+        System.out.println();
+
+        session.getTransaction().commit();
+    }
 
     @Test
     void checkGetReflectionApi() throws SQLException, InvocationTargetException, InstantiationException,
