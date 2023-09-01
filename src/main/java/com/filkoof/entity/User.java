@@ -30,13 +30,11 @@ public class User {
         @GeneratedValue(generator = "user_gen", strategy = GenerationType.SEQUENCE)
         @SequenceGenerator(name = "user_gen", sequenceName = "users_id_seq", allocationSize = 1)
     */
-    /*
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
-    */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @EmbeddedId
+    //    @EmbeddedId //- in case embeddable key
     @AttributeOverride(name = "birthDate", column = @Column(name = "birth_date"))
     private PersonalInfo personalInfo;
 
@@ -51,6 +49,9 @@ public class User {
     @Enumerated(EnumType.STRING) //EnumType.ORDINAL for mapping enum to int
     private Role role;
 
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
 }
 
     /*
