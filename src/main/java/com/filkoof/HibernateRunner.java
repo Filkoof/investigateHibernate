@@ -1,5 +1,6 @@
 package com.filkoof;
 
+import com.filkoof.entity.PersonalInfo;
 import com.filkoof.entity.User;
 import com.filkoof.util.HibernateUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -13,9 +14,11 @@ public class HibernateRunner {
     public static void main(String[] args) {
 
         User user = User.builder()
-                .username("ivan@gmail.com")
-                .firstname("Ivan")
-                .lastname("Ivanov")
+                .username("petr@gmail.com")
+                .personalInfo(PersonalInfo.builder()
+                        .firstname("Petr")
+                        .lastname("Petrov")
+                        .build())
                 .build();
 
         log.info("User entity is in transient state, object {}", user);
