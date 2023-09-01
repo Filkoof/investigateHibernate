@@ -29,16 +29,19 @@ public class User {
         @GeneratedValue(generator = "user_gen", strategy = GenerationType.SEQUENCE)
         @SequenceGenerator(name = "user_gen", sequenceName = "users_id_seq", allocationSize = 1)
     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    /*
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
+    */
+
+    @EmbeddedId
+    @AttributeOverride(name = "birthDate", column = @Column(name = "birth_date"))
+    private PersonalInfo personalInfo;
 
     @Column(unique = true)
     private String username;
 
-    @Embedded
-    @AttributeOverride(name = "birthDate", column = @Column(name = "birth_date"))
-    private PersonalInfo personalInfo;
 
     @Type(type = "vladmihalceaJsonb")
     private String info;
