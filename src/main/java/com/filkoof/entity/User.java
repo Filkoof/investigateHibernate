@@ -17,6 +17,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "users", schema = "public")
 @TypeDef(name = "vladmihalceaJsonb", typeClass = JsonBinaryType.class)
+//@Access(AccessType.PROPERTY) getters and setters access for Hibernate (AccessType.FIELD default, access with reflection API)
 public class User {
 
     /*
@@ -46,7 +47,19 @@ public class User {
     @Type(type = "vladmihalceaJsonb")
     private String info;
 
-    @Enumerated(EnumType.STRING)
+    //@Transient don't need to serialize this field
+    @Enumerated(EnumType.STRING) //EnumType.ORDINAL for mapping enum to int
     private Role role;
 
 }
+
+    /*
+        @Temporal(TemporalType.TIMESTAMP)
+        private LocalDateTime localDateTime;
+
+        @Temporal(TemporalType.DATE)
+        private LocalDate localDate;
+
+        @Temporal(TemporalType.TIME)
+        private LocalTime localTime;
+    */
