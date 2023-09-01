@@ -23,6 +23,41 @@ import static java.util.stream.Collectors.joining;
 class HibernateRunnerTest {
 
     @Test
+    void deleteCompany() {
+        @Cleanup var sessionFactory = HibernateUtil.buildSessionFactory();
+        @Cleanup var session = sessionFactory.openSession();
+
+        session.beginTransaction();
+
+        Company company = session.get(Company.class, 3);
+        session.delete(company);
+
+        session.getTransaction().commit();
+    }
+
+    @Test
+    void addUserToNewCompany() {
+        @Cleanup var sessionFactory = HibernateUtil.buildSessionFactory();
+        @Cleanup var session = sessionFactory.openSession();
+
+        session.beginTransaction();
+
+        Company company = Company.builder()
+                .name("Facebook")
+                .build();
+
+        User user = User.builder()
+                .username("sveta@gmail.com")
+                .build();
+
+        company.addUser(user);
+
+        session.save(company);
+
+        session.getTransaction().commit();
+    }
+
+    @Test
     void oneToMany() {
         @Cleanup var sessionFactory = HibernateUtil.buildSessionFactory();
         @Cleanup var session = sessionFactory.openSession();
