@@ -17,7 +17,10 @@ public class PersonalInfo {
     private String firstname;
     private String lastname;
 
-    //    @Convert(converter = BirthdayConverter.class)
-//    @Column(name = "birth_date")
+    /*
+        Alternative way to register converter (HibernateUtil.class: configuration.addAttributeConverter(new BirthdayConverter());)
+        @Convert(converter = BirthdayConverter.class)
+    */
+    //    @Column(name = "birth_date")
     private Birthday birthDate;
 }
