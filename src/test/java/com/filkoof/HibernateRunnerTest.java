@@ -1,5 +1,6 @@
 package com.filkoof;
 
+import com.filkoof.entity.Chat;
 import com.filkoof.entity.Company;
 import com.filkoof.entity.Profile;
 import com.filkoof.entity.User;
@@ -23,6 +24,24 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
 
 class HibernateRunnerTest {
+
+    @Test
+    void checkManyToMany() {
+        try (var sessionFactory = HibernateUtil.buildSessionFactory();
+             var session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            var user = session.get(User.class, 7L);
+
+            var chat = Chat.builder()
+                    .name("filkoof")
+                    .build();
+            user.addChat(chat);
+            session.save(chat);
+
+            session.getTransaction().commit();
+        }
+    }
 
     @Test
     void checkOneToOne() {
