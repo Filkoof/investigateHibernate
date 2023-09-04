@@ -17,6 +17,7 @@
     <mapping class="com.filkoof.entity.Profile"/>
     <mapping class="com.filkoof.entity.Chat"/>
     <mapping class="com.filkoof.entity.UserChat"/>
+    <mapping class="com.filkoof.entity.LocaleInfo"/>
 
     <!-- DB schema will be updated if needed -->
     <!-- <property name="hibernate.hbm2ddl.auto">update</property> -->
