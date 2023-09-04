@@ -1,9 +1,6 @@
 package com.filkoof;
 
-import com.filkoof.entity.Chat;
-import com.filkoof.entity.Company;
-import com.filkoof.entity.Profile;
-import com.filkoof.entity.User;
+import com.filkoof.entity.*;
 import com.filkoof.util.HibernateUtil;
 import lombok.Cleanup;
 import org.junit.jupiter.api.Test;
@@ -17,6 +14,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -32,12 +30,16 @@ class HibernateRunnerTest {
             session.beginTransaction();
 
             var user = session.get(User.class, 7L);
+            var chat = session.get(Chat.class, 1L);
 
-            var chat = Chat.builder()
-                    .name("filkoof")
+            var userChat = UserChat.builder()
+                    .createdAt(Instant.now())
+                    .createdBy(user.getUsername())
                     .build();
-            user.addChat(chat);
-            session.save(chat);
+            userChat.setUser(user);
+            userChat.setChat(chat);
+
+            session.save(userChat);
 
             session.getTransaction().commit();
         }
