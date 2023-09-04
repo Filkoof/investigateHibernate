@@ -14,6 +14,7 @@
 
     <mapping class="com.filkoof.entity.User"/>
     <mapping class="com.filkoof.entity.Company"/>
+    <mapping class="com.filkoof.entity.Profile"/>
 
     <!-- DB schema will be updated if needed -->
     <!-- <property name="hibernate.hbm2ddl.auto">update</property> -->

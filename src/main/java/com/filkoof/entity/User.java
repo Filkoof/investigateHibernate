@@ -11,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "username")
-@ToString(exclude = "company")
+@ToString(exclude = {"company", "profile"})
 @Builder
 @Entity
 @Table(name = "users", schema = "public")
@@ -48,9 +48,17 @@ public class User {
     @Enumerated(EnumType.STRING) //EnumType.ORDINAL for mapping enum to int
     private Role role;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     private Company company;
+
+    @OneToOne(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            optional = false
+    )
+    private Profile profile;
 }
 
     /*

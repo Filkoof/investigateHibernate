@@ -1,6 +1,7 @@
 package com.filkoof;
 
 import com.filkoof.entity.Company;
+import com.filkoof.entity.Profile;
 import com.filkoof.entity.User;
 import com.filkoof.util.HibernateUtil;
 import lombok.Cleanup;
@@ -16,11 +17,61 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Set;
 
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
 
 class HibernateRunnerTest {
+
+    @Test
+    void checkOneToOne() {
+        try (var sessionFactory = HibernateUtil.buildSessionFactory();
+             var session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            var user = User.builder()
+                    .username("test2@gmail.com")
+                    .build();
+            var profile = Profile.builder()
+                    .language("ru")
+                    .street("Green 18")
+                    .build();
+            profile.setUser(user);
+
+            session.save(user);
+
+            session.getTransaction().commit();
+        }
+    }
+
+    @Test
+    void checkOrphanRemoval() {
+        try (var sessionFactory = HibernateUtil.buildSessionFactory();
+             var session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            Company company = session.get(Company.class, 1);
+            company.getUsers().removeIf(user -> user.getId().equals(1L));
+
+            session.getTransaction().commit();
+        }
+    }
+
+    @Test
+    void checkLazyInitialisation() {
+        Company company;
+        try (var sessionFactory = HibernateUtil.buildSessionFactory();
+             var session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            company = session.get(Company.class, 1);
+
+            session.getTransaction().commit();
+        }
+        Set<User> users = company.getUsers();
+        System.out.println(users.size());
+    }
 
     @Test
     void deleteCompany() {
