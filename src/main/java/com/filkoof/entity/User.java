@@ -38,7 +38,7 @@ import java.util.List;
 @TypeDef(name = "vladmihalceaJsonb", typeClass = JsonBinaryType.class)
 @Entity
 //@Access(AccessType.PROPERTY) getters and setters access for Hibernate (AccessType.FIELD default, access with reflection API)
-public class User implements Comparable<User> {
+public class User implements Comparable<User>, BaseEntity<Long> {
 
     /*
         @GeneratedValue(generator = "user_gen", strategy = GenerationType.TABLE)
