@@ -1,7 +1,14 @@
 package com.filkoof;
 
-import com.filkoof.entity.*;
+import com.filkoof.entity.Chat;
+import com.filkoof.entity.Company;
+import com.filkoof.entity.Profile;
+import com.filkoof.entity.User;
+import com.filkoof.entity.UserChat;
+import com.filkoof.util.HibernateTestUtil;
 import com.filkoof.util.HibernateUtil;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.joining;
 import lombok.Cleanup;
 import org.junit.jupiter.api.Test;
 
@@ -16,12 +23,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.Set;
-
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.joining;
 
 class HibernateRunnerTest {
+
+    @Test
+    void checkTestContainer() {
+        try (var sessionFactory = HibernateTestUtil.buildSessionFactory();
+             var session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            var com = Company.builder()
+                    .name("Google")
+                    .build();
+
+            session.getTransaction().commit();
+        }
+    }
 
     @Test
     void localeInfo() {
@@ -88,7 +105,7 @@ class HibernateRunnerTest {
             session.beginTransaction();
 
             Company company = session.get(Company.class, 1);
-            company.getUsers().removeIf(user -> user.getId().equals(1L));
+//            company.getUsers().removeIf(user -> user.getId().equals(1L));
 
             session.getTransaction().commit();
         }
@@ -105,8 +122,8 @@ class HibernateRunnerTest {
 
             session.getTransaction().commit();
         }
-        Set<User> users = company.getUsers();
-        System.out.println(users.size());
+//        Set<User> users = company.getUsers();
+//        System.out.println(users.size());
     }
 
     @Test
