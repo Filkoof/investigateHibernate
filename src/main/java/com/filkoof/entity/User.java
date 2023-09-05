@@ -1,11 +1,30 @@
 package com.filkoof.entity;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.*;
+import javax.persistence.AttributeOverride;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,11 +34,11 @@ import java.util.List;
 @EqualsAndHashCode(of = "username")
 @ToString(exclude = {"company", "profile", "userChats"})
 @Builder
-@Entity
 @Table(name = "users", schema = "public")
 @TypeDef(name = "vladmihalceaJsonb", typeClass = JsonBinaryType.class)
+@Entity
 //@Access(AccessType.PROPERTY) getters and setters access for Hibernate (AccessType.FIELD default, access with reflection API)
-public class User {
+public class User implements Comparable<User> {
 
     /*
         @GeneratedValue(generator = "user_gen", strategy = GenerationType.TABLE)
@@ -65,6 +84,11 @@ public class User {
     @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<UserChat> userChats = new ArrayList<>();
+
+    @Override
+    public int compareTo(User o) {
+        return username.compareTo(o.username);
+    }
 }
 
     /*
