@@ -12,7 +12,6 @@ import org.hibernate.annotations.TypeDef;
 import javax.persistence.AttributeOverride;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -26,6 +25,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,11 +34,11 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "username")
 @ToString(exclude = {"company", "profile", "userChats"})
-//@Table(name = "users", schema = "public")
+@Table(name = "users", schema = "public")
 @TypeDef(name = "vladmihalceaJsonb", typeClass = JsonBinaryType.class)
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "type")
+@Inheritance(strategy = InheritanceType.JOINED)
+//@DiscriminatorColumn(name = "type") for SINGLE_TABLE
 //@Access(AccessType.PROPERTY) getters and setters access for Hibernate (AccessType.FIELD default, access with reflection API)
 public abstract class User implements Comparable<User>, BaseEntity<Long> {
 
@@ -49,7 +49,7 @@ public abstract class User implements Comparable<User>, BaseEntity<Long> {
             allocationSize = 1)
     */
     /*
-        @GeneratedValue(generator = "user_gen", strategy = GenerationType.SEQUENCE)
+        @GeneratedValue(generator = "user_gen", strategy = GenerationType.SEQUENCE) also need for TABLE_PER_CLASS
         @SequenceGenerator(name = "user_gen", sequenceName = "users_id_seq", allocationSize = 1)
     */
     @Id
