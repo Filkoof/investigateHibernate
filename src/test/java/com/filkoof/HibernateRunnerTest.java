@@ -2,13 +2,11 @@ package com.filkoof;
 
 import com.filkoof.entity.Chat;
 import com.filkoof.entity.Company;
-import com.filkoof.entity.Language;
-import com.filkoof.entity.Manager;
-import com.filkoof.entity.Programmer;
 import com.filkoof.entity.User;
 import com.filkoof.util.HibernateTestUtil;
 import com.filkoof.util.HibernateUtil;
 import lombok.Cleanup;
+import org.hibernate.annotations.QueryHints;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
@@ -38,47 +36,55 @@ class HibernateRunnerTest {
                                     """, User.class)
                     .setParameter("firstname", "Ivan")
                     .setParameter("companyName", "Google")
+                    .setHint(QueryHints.FETCH_SIZE, "50")
                     .list();
 
-            session.getTransaction().commit();
-        }
-    }
+            int countRows = session.createQuery(
+                    """
+                            UPDATE User u SET u.role = 'ADMIN'
+                            """).executeUpdate();
 
-    @Test
-    void checkTestContainer() {
-        try (var sessionFactory = HibernateTestUtil.buildSessionFactory();
-             var session = sessionFactory.openSession()) {
-            session.beginTransaction();
-
-            Company google = Company.builder()
-                    .name("Google")
-                    .build();
-            session.save(google);
-
-            Programmer programmer = Programmer.builder()
-                    .username("ivan@gmail.com")
-                    .language(Language.JAVA)
-                    .company(google)
-                    .build();
-            session.save(programmer);
-
-            Manager manager = Manager.builder()
-                    .username("sveta@gmail.com")
-                    .projectName("Starter")
-                    .company(google)
-                    .build();
-            session.save(manager);
-            session.flush();
-
-            session.clear();
-
-            var programmer1 = session.get(Programmer.class, 1L);
-            var manager1 = session.get(User.class, 2L);
-            System.out.println();
+            session.createNativeQuery("SELECT u.* FROM users u WHERE u.firstname = 'Ivan'", User.class);
 
             session.getTransaction().commit();
         }
     }
+
+//    @Test
+//    void checkTestContainer() {
+//        try (var sessionFactory = HibernateTestUtil.buildSessionFactory();
+//             var session = sessionFactory.openSession()) {
+//            session.beginTransaction();
+//
+//            Company google = Company.builder()
+//                    .name("Google")
+//                    .build();
+//            session.save(google);
+//
+//            Programmer programmer = Programmer.builder()
+//                    .username("ivan@gmail.com")
+//                    .language(Language.JAVA)
+//                    .company(google)
+//                    .build();
+//            session.save(programmer);
+//
+//            Manager manager = Manager.builder()
+//                    .username("sveta@gmail.com")
+//                    .projectName("Starter")
+//                    .company(google)
+//                    .build();
+//            session.save(manager);
+//            session.flush();
+//
+//            session.clear();
+//
+//            var programmer1 = session.get(Programmer.class, 1L);
+//            var manager1 = session.get(User.class, 2L);
+//            System.out.println();
+//
+//            session.getTransaction().commit();
+//        }
+//    }
 
     @Test
     void localeInfo() {
