@@ -17,8 +17,32 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 class HibernateRunnerTest {
+
+    @Test
+    void checkHql() {
+        try (var sessionFactory = HibernateTestUtil.buildSessionFactory();
+             var session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            List<User> users = session.createQuery(
+//                    "SELECT u FROM User u WHERE u.personalInfo.firstname = ?1", User.class)
+//                    .setParameter(1, "Ivan")
+                            """
+                                    SELECT u FROM User u
+                                    JOIN u.company c
+                                    WHERE u.personalInfo.firstname = :firstname AND c.name = :companyName
+                                    ORDER BY u.personalInfo.lastname DESC
+                                    """, User.class)
+                    .setParameter("firstname", "Ivan")
+                    .setParameter("companyName", "Google")
+                    .list();
+
+            session.getTransaction().commit();
+        }
+    }
 
     @Test
     void checkTestContainer() {
