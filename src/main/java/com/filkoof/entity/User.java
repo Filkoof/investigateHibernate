@@ -2,7 +2,6 @@ package com.filkoof.entity;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -20,11 +19,12 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,12 +33,12 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "username")
 @ToString(exclude = {"company", "profile", "userChats"})
-@Builder
-@Table(name = "users", schema = "public")
+//@Table(name = "users", schema = "public")
 @TypeDef(name = "vladmihalceaJsonb", typeClass = JsonBinaryType.class)
 @Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 //@Access(AccessType.PROPERTY) getters and setters access for Hibernate (AccessType.FIELD default, access with reflection API)
-public class User implements Comparable<User>, BaseEntity<Long> {
+public abstract class User implements Comparable<User>, BaseEntity<Long> {
 
     /*
         @GeneratedValue(generator = "user_gen", strategy = GenerationType.TABLE)
@@ -51,7 +51,7 @@ public class User implements Comparable<User>, BaseEntity<Long> {
         @SequenceGenerator(name = "user_gen", sequenceName = "users_id_seq", allocationSize = 1)
     */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     //    @EmbeddedId //- in case embeddable key
@@ -76,12 +76,11 @@ public class User implements Comparable<User>, BaseEntity<Long> {
     @OneToOne(
             mappedBy = "user",
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            optional = false
+            fetch = FetchType.LAZY
     )
     private Profile profile;
 
-    @Builder.Default
+    //    @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<UserChat> userChats = new ArrayList<>();
 
