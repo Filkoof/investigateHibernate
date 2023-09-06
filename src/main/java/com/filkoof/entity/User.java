@@ -12,6 +12,7 @@ import org.hibernate.annotations.TypeDef;
 import javax.persistence.AttributeOverride;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -36,7 +37,8 @@ import java.util.List;
 //@Table(name = "users", schema = "public")
 @TypeDef(name = "vladmihalceaJsonb", typeClass = JsonBinaryType.class)
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type")
 //@Access(AccessType.PROPERTY) getters and setters access for Hibernate (AccessType.FIELD default, access with reflection API)
 public abstract class User implements Comparable<User>, BaseEntity<Long> {
 
@@ -51,7 +53,7 @@ public abstract class User implements Comparable<User>, BaseEntity<Long> {
         @SequenceGenerator(name = "user_gen", sequenceName = "users_id_seq", allocationSize = 1)
     */
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     //    @EmbeddedId //- in case embeddable key
