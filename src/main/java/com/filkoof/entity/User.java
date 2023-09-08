@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.FetchProfile;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -32,6 +33,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@FetchProfile(name = "withCompanyAndPayment", fetchOverrides = {
+        @FetchProfile.FetchOverride(
+                entity = User.class, association = "company", mode = FetchMode.JOIN
+        ),
+        @FetchProfile.FetchOverride(
+                entity = User.class, association = "payments", mode = FetchMode.JOIN
+        )
+})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -77,7 +86,6 @@ public class User implements Comparable<User>, BaseEntity<Long> {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
-    @Fetch(FetchMode.JOIN)
     private Company company;
 
 //    @OneToOne(
