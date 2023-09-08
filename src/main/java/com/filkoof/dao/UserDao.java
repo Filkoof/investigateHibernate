@@ -6,6 +6,9 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.hibernate.Session;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -17,28 +20,56 @@ public class UserDao {
      * Return all employee
      */
     public List<User> findAll(Session session) {
-        return session.createQuery("SELECT u FROM User u", User.class)
-                .list();
+//        return session.createQuery("SELECT u FROM User u", User.class).list(); - HQL
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+
+        CriteriaQuery<User> criteria = cb.createQuery(User.class);
+        Root<User> user = criteria.from(User.class);
+
+        criteria.select(user);
+
+        return session.createQuery(criteria).list();
     }
 
     /**
      * Return all employees with name
      */
     public List<User> findAllByFirstname(Session session, String firstname) {
-        return session.createQuery(
+        /*return session.createQuery(
                         """
                                 SELECT u FROM User u
                                 WHERE u.personalInfo.firstname = :firstname
                                 """, User.class)
                 .setParameter("firstname", firstname)
-                .list();
+                .list(); - HQL*/
+        var cb = session.getCriteriaBuilder();
+
+        var criteria = cb.createQuery(User.class);
+        Root<User> user = criteria.from(User.class);
+
+        criteria.select(user).where(
+                cb.equal(user.get("personalInfo").get("firstname"), firstname)
+        );
+
+        return session.createQuery(criteria).list();
     }
 
     /**
      * Return first {limit} employees, ordered by birthdate (Ascending)
      */
     public List<User> findLimitedUsersOrderedByBirthday(Session session, int limit) {
-        return session.createQuery("SELECT u FROM User u ORDER BY u.personalInfo.birthDate ", User.class)
+       /* return session.createQuery("SELECT u FROM User u ORDER BY u.personalInfo.birthDate ", User.class)
+                .setMaxResults(limit)
+                .list(); - HQL*/
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+
+        CriteriaQuery<User> criteria = cb.createQuery(User.class);
+        Root<User> user = criteria.from(User.class);
+
+        criteria.select(user).orderBy(cb.asc(user.get("personalInfo").get("birthDate")));
+
+        return session.createQuery(criteria)
                 .setMaxResults(limit)
                 .list();
     }
